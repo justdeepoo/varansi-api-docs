@@ -1,0 +1,471 @@
+{
+  "info": {
+    "_postman_id": "varansi-api-collection-v1",
+    "name": "Varanshi Nagar Nigam Chatbot API",
+    "description": "Complete API collection for Varanshi Nagar Nigam Chatbot services",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Send OTP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('OTP sent successfully', function() {",
+                  "        var jsonData = pm.response.json();",
+                  "        pm.expect(jsonData.status).to.eql(true);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobile_no\": \"9876543210\",\n  \"otp_type\": \"ChatbotLogin\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/chatbot/login/send-otp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chatbot",
+                "login",
+                "send-otp"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('OTP verified and token received', function() {",
+                  "        var jsonData = pm.response.json();",
+                  "        pm.expect(jsonData.status).to.eql(true);",
+                  "        pm.expect(jsonData.token).to.exist;",
+                  "        pm.environment.set('jwt_token', jsonData.token);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobile_no\": \"9876543210\",\n  \"otp\": \"458921\",\n  \"otp_type\": \"ChatbotLogin\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/chatbot/login/verify-otp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chatbot",
+                "login",
+                "verify-otp"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Property Tax",
+      "item": [
+        {
+          "name": "Get Linked Properties",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('Properties retrieved', function() {",
+                  "        var jsonData = pm.response.json();",
+                  "        pm.expect(jsonData.status).to.eql(true);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/property/mobile-properties?mobile_no=9876543210",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "property",
+                "mobile-properties"
+              ],
+              "query": [
+                {
+                  "key": "mobile_no",
+                  "value": "9876543210"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Property Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/property/details?pid=VN-PT-102345",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "property",
+                "details"
+              ],
+              "query": [
+                {
+                  "key": "pid",
+                  "value": "VN-PT-102345"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Initiate Property Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pid\": \"VN-PT-102345\",\n  \"amount\": 4250,\n  \"mobile_no\": \"9876543210\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/property/payment/initiate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "property",
+                "payment",
+                "initiate"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Water Tax",
+      "item": [
+        {
+          "name": "Get Water Connections",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/water/mobile-connections?mobile_no=9876543210",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "water",
+                "mobile-connections"
+              ],
+              "query": [
+                {
+                  "key": "mobile_no",
+                  "value": "9876543210"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Check Water Dues",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/water/dues?connection_no=WT-456789",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "water",
+                "dues"
+              ],
+              "query": [
+                {
+                  "key": "connection_no",
+                  "value": "WT-456789"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Initiate Water Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"connection_no\": \"WT-456789\",\n  \"amount\": 980,\n  \"mobile_no\": \"9876543210\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/water/payment/initiate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "water",
+                "payment",
+                "initiate"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Community Hall",
+      "item": [
+        {
+          "name": "List Community Halls",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/community-hall/list",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "community-hall",
+                "list"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Check Hall Availability",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hall_id\": 1,\n  \"booking_date\": \"2026-03-20\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/community-hall/availability",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "community-hall",
+                "availability"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Book Community Hall",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hall_id\": 1,\n  \"booking_date\": \"2026-03-20\",\n  \"slot\": \"Morning\",\n  \"applicant_name\": \"Rahul Sharma\",\n  \"mobile_no\": \"9876543210\",\n  \"event_type\": \"Wedding\",\n  \"expected_guests\": 150\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/community-hall/book",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "community-hall",
+                "book"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "Get Transaction History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transactions/history?mobile_no=9876543210",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transactions",
+                "history"
+              ],
+              "query": [
+                {
+                  "key": "mobile_no",
+                  "value": "9876543210"
+                },
+                {
+                  "key": "from_date",
+                  "value": "2026-01-01",
+                  "disabled": true
+                },
+                {
+                  "key": "to_date",
+                  "value": "2026-03-06",
+                  "disabled": true
+                },
+                {
+                  "key": "service_type",
+                  "value": "PropertyTax",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://api.varansinagar.gov.in/api",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

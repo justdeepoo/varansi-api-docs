@@ -1,0 +1,824 @@
+openapi: 3.0.0
+info:
+  title: Varanasi Nagar Nigam Chatbot API
+  description: Complete API for managing municipal services including property tax, water tax, and community hall bookings
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: api-support@varansinagar.gov.in
+  license:
+    name: Proprietary
+    url: https://varansinagar.gov.in
+
+servers:
+  - url: https://api.varansinagar.gov.in/api
+    description: Production Server
+  - url: https://staging-api.varansinagar.gov.in/api
+    description: Staging Server
+
+tags:
+  - name: Authentication
+    description: Login and OTP endpoints
+  - name: Property Tax
+    description: Property tax management endpoints
+  - name: Water Tax
+    description: Water tax management endpoints
+  - name: Community Hall
+    description: Community hall booking endpoints
+  - name: Transactions
+    description: Transaction history endpoints
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: false
+        message:
+          type: string
+        error_code:
+          type: string
+        details:
+          type: object
+      required:
+        - status
+        - message
+
+    SuccessResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: true
+        message:
+          type: string
+
+    AuthToken:
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: true
+        message:
+          type: string
+        token:
+          type: string
+          description: JWT Authentication Token
+
+    Property:
+      type: object
+      properties:
+        pid:
+          type: string
+          example: VN-PT-102345
+        owner_name:
+          type: string
+          example: Rahul Sharma
+        address:
+          type: string
+          example: Sigra, Varanasi
+        outstanding_amount:
+          type: number
+          example: 4250
+        property_type:
+          type: string
+          example: Residential
+        area_sqft:
+          type: number
+          example: 1500
+        last_payment_date:
+          type: string
+          format: date
+          example: 05-02-2025
+        last_payment_amount:
+          type: number
+          example: 2000
+
+    PropertyListResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              pid:
+                type: string
+              address:
+                type: string
+              outstanding_amount:
+                type: number
+
+    PaymentInitiationResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        payment_url:
+          type: string
+        order_id:
+          type: string
+        amount:
+          type: number
+        expiry_time:
+          type: string
+          format: date-time
+
+    WaterConnection:
+      type: object
+      properties:
+        connection_no:
+          type: string
+          example: WT-456789
+        address:
+          type: string
+          example: Sigra, Varanasi
+        consumer_type:
+          type: string
+          example: Residential
+
+    WaterDues:
+      type: object
+      properties:
+        connection_no:
+          type: string
+        consumer_name:
+          type: string
+        outstanding_amount:
+          type: number
+        consumer_type:
+          type: string
+        last_payment_date:
+          type: string
+          format: date
+        last_payment_amount:
+          type: number
+        current_month_usage:
+          type: number
+
+    CommunityHall:
+      type: object
+      properties:
+        hall_id:
+          type: integer
+          example: 1
+        hall_name:
+          type: string
+          example: Sigra Community Hall
+        capacity:
+          type: integer
+          example: 200
+        location:
+          type: string
+          example: Sigra, Varanasi
+
+    HallAvailability:
+      type: object
+      properties:
+        slot:
+          type: string
+          example: Morning
+          enum:
+            - Morning
+            - Afternoon
+            - Evening
+        available:
+          type: boolean
+          example: true
+        time:
+          type: string
+          example: 06:00 AM - 12:00 PM
+
+    BookingResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        booking_id:
+          type: string
+          example: HALL-98765
+        message:
+          type: string
+        approval_status:
+          type: string
+          example: Pending
+        expected_approval_time:
+          type: string
+          example: 2-3 business days
+
+    Transaction:
+      type: object
+      properties:
+        transaction_id:
+          type: string
+        service:
+          type: string
+          enum:
+            - Property Tax
+            - Water Tax
+            - Community Hall
+        amount:
+          type: number
+        date:
+          type: string
+          format: date
+        time:
+          type: string
+        status:
+          type: string
+          enum:
+            - Success
+            - Failed
+            - Pending
+            - Cancelled
+        reference_id:
+          type: string
+
+paths:
+  /chatbot/login/send-otp:
+    post:
+      tags:
+        - Authentication
+      summary: Send OTP to mobile number
+      description: Sends a one-time password to the provided mobile number for login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mobile_no:
+                  type: string
+                  example: "9876543210"
+                  description: 10-digit mobile number
+                otp_type:
+                  type: string
+                  example: ChatbotLogin
+                  description: Type of OTP request
+              required:
+                - mobile_no
+                - otp_type
+      responses:
+        '200':
+          description: OTP sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /chatbot/login/verify-otp:
+    post:
+      tags:
+        - Authentication
+      summary: Verify OTP and receive authentication token
+      description: Verifies the OTP and returns a JWT token for authenticated requests
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mobile_no:
+                  type: string
+                  example: "9876543210"
+                otp:
+                  type: string
+                  example: "458921"
+                  description: 6-digit OTP
+                otp_type:
+                  type: string
+                  example: ChatbotLogin
+              required:
+                - mobile_no
+                - otp
+                - otp_type
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+        '400':
+          description: Invalid OTP or expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Too many attempts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /property/mobile-properties:
+    get:
+      tags:
+        - Property Tax
+      summary: Get all properties linked to mobile number
+      description: Retrieves list of all properties linked to the provided mobile number
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: mobile_no
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "9876543210"
+          description: 10-digit mobile number
+      responses:
+        '200':
+          description: Properties retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No properties found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /property/details:
+    get:
+      tags:
+        - Property Tax
+      summary: Get property details
+      description: Retrieves detailed information about a specific property
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pid
+          in: query
+          required: true
+          schema:
+            type: string
+            example: VN-PT-102345
+          description: Property ID
+      responses:
+        '200':
+          description: Property details retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Property'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Property not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /property/payment/initiate:
+    post:
+      tags:
+        - Property Tax
+      summary: Initiate property tax payment
+      description: Creates a payment session and returns payment gateway URL
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pid:
+                  type: string
+                  example: VN-PT-102345
+                amount:
+                  type: number
+                  example: 4250
+                mobile_no:
+                  type: string
+                  example: "9876543210"
+              required:
+                - pid
+                - amount
+                - mobile_no
+      responses:
+        '200':
+          description: Payment initiated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/PaymentInitiationResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Property not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /water/mobile-connections:
+    get:
+      tags:
+        - Water Tax
+      summary: Get all water connections
+      description: Retrieves list of all water connections linked to mobile number
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: mobile_no
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "9876543210"
+      responses:
+        '200':
+          description: Connections retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WaterConnection'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No connections found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /water/dues:
+    get:
+      tags:
+        - Water Tax
+      summary: Check water dues
+      description: Retrieves outstanding water dues for a connection
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: connection_no
+          in: query
+          required: true
+          schema:
+            type: string
+            example: WT-456789
+      responses:
+        '200':
+          description: Dues retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/WaterDues'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Connection not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /water/payment/initiate:
+    post:
+      tags:
+        - Water Tax
+      summary: Initiate water tax payment
+      description: Creates a payment session for water tax
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                connection_no:
+                  type: string
+                  example: WT-456789
+                amount:
+                  type: number
+                  example: 980
+                mobile_no:
+                  type: string
+                  example: "9876543210"
+              required:
+                - connection_no
+                - amount
+                - mobile_no
+      responses:
+        '200':
+          description: Payment initiated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/PaymentInitiationResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /community-hall/list:
+    get:
+      tags:
+        - Community Hall
+      summary: List all community halls
+      description: Retrieves list of all available community halls
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Halls retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CommunityHall'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /community-hall/availability:
+    post:
+      tags:
+        - Community Hall
+      summary: Check hall availability
+      description: Checks availability of a hall for a specific date
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                hall_id:
+                  type: integer
+                  example: 1
+                booking_date:
+                  type: string
+                  format: date
+                  example: "2026-03-20"
+              required:
+                - hall_id
+                - booking_date
+      responses:
+        '200':
+          description: Availability retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HallAvailability'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /community-hall/book:
+    post:
+      tags:
+        - Community Hall
+      summary: Book a community hall
+      description: Submits a booking request for a community hall
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                hall_id:
+                  type: integer
+                  example: 1
+                booking_date:
+                  type: string
+                  format: date
+                  example: "2026-03-20"
+                slot:
+                  type: string
+                  enum:
+                    - Morning
+                    - Afternoon
+                    - Evening
+                  example: Morning
+                applicant_name:
+                  type: string
+                  example: Rahul Sharma
+                mobile_no:
+                  type: string
+                  example: "9876543210"
+                event_type:
+                  type: string
+                  example: Wedding
+                expected_guests:
+                  type: integer
+                  example: 150
+              required:
+                - hall_id
+                - booking_date
+                - slot
+                - applicant_name
+                - mobile_no
+      responses:
+        '200':
+          description: Booking submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /transactions/history:
+    get:
+      tags:
+        - Transactions
+      summary: Get transaction history
+      description: Retrieves transaction history for a mobile number
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: mobile_no
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "9876543210"
+        - name: from_date
+          in: query
+          schema:
+            type: string
+            format: date
+            example: "2026-01-01"
+        - name: to_date
+          in: query
+          schema:
+            type: string
+            format: date
+            example: "2026-03-06"
+        - name: service_type
+          in: query
+          schema:
+            type: string
+            enum:
+              - PropertyTax
+              - WaterTax
+              - CommunityHall
+      responses:
+        '200':
+          description: Transactions retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No transactions found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
