@@ -1,189 +1,259 @@
-# Varanasi Nagar Nigam Chatbot API Documentation
+# Varanasi Nagar Nigam WhatsApp Bot API Documentation
 
-Welcome to the comprehensive API documentation for the Varanasi Nagar Nigam Chatbot API. This API enables citizens to access municipal services including property tax management, water tax payments, and community hall bookings through a chatbot interface.
+Welcome to the API documentation for Varanasi Nagar Nigam WhatsApp Bot. This simplified API enables citizens to check property taxes, water bills, and manage payments through WhatsApp.
 
 ## Overview
 
-The Varanasi Nagar Nigam Chatbot API provides a convenient way for residents to:
+The WhatsApp Bot API provides a convenient way for residents to:
 - Authenticate using mobile-based OTP
-- View and manage property tax records
-- Check and pay water bills
-- Book community halls for events
-- Track payment history
+- List their properties
+- Check dues (property tax, water tax, sewerage tax)
+- View last payment details
+- Download billing invoice copies
+- Receive notifications about payment updates
+
+## API Flow
+
+The integration follows this simple 5-step flow:
+
+1. **Authenticate** - Send OTP and verify to get authentication token
+2. **List Your Properties** - Fetch all properties linked to mobile number
+3. **Check Dues** - Select a property and view outstanding dues
+4. **Check Last Payment** - View last payment details for a property
+5. **Download Billing Invoice** - Download invoice copy for a specific month
 
 ## Quick Start
 
-### 1. Authentication
-Every API request (except login endpoints) requires authentication using a JWT token.
+### Step 1: Authentication
+Every API request requires authentication using a JWT token.
 
 ```bash
-# Step 1: Send OTP
-curl -X POST https://api.varansinagar.gov.in/api/chatbot/login/send-otp \
+# Send OTP
+curl -X POST https://api.varansinagar.gov.in/api/auth/send-otp \
   -H "Content-Type: application/json" \
-  -d '{"mobile_no": "9876543210", "otp_type": "ChatbotLogin"}'
+  -d '{"mobile_no": "9876543210"}'
 
-# Step 2: Verify OTP
-curl -X POST https://api.varansinagar.gov.in/api/chatbot/login/verify-otp \
+# Verify OTP and get token
+curl -X POST https://api.varansinagar.gov.in/api/auth/verify-otp \
   -H "Content-Type: application/json" \
-  -d '{"mobile_no": "9876543210", "otp": "458921", "otp_type": "ChatbotLogin"}'
-
-# Response will include your JWT token
+  -d '{"mobile_no": "9876543210", "otp": "458921"}'
 ```
 
-### 2. Use the Token
+### Step 2: Use the Token
 Include the token in all subsequent requests:
 
 ```bash
-curl -X GET "https://api.varansinagar.gov.in/api/property/mobile-properties?mobile_no=9876543210" \
+curl -X GET "https://api.varansinagar.gov.in/api/properties/list" \
   -H "Authorization: Bearer <your_jwt_token>" \
   -H "Content-Type: application/json"
 ```
 
-## API Structure
+## API Endpoints Overview
 
-The API is organized into the following services:
+### 1. Authentication Endpoints
+- [Send OTP](docs/endpoints/authentication/send-otp.md) - Send OTP to mobile number
+- [Verify OTP](docs/endpoints/authentication/verify-otp.md) - Verify OTP and get JWT token
 
-### Authentication
-- [Send OTP](endpoints/authentication/send-otp.md) - Initiate login
-- [Verify OTP](endpoints/authentication/verify-otp.md) - Complete login and get token
+### 2. Property Management
+- [List Your Properties](docs/endpoints/list-properties.md) - Get all properties for user
 
-### Property Tax Management
-- [Get Linked Properties](endpoints/property-tax/get-properties.md) - List all properties
-- [Get Property Details](endpoints/property-tax/get-property-details.md) - View property information
-- [Initiate Payment](endpoints/property-tax/initiate-payment.md) - Pay property tax
+### 3. Dues Management
+- [Check Dues](docs/endpoints/check-dues.md) - Get dues breakdown for property
 
-### Water Tax Management
-- [Get Connections](endpoints/water-tax/get-connections.md) - List all water connections
-- [Check Dues](endpoints/water-tax/check-dues.md) - View outstanding water dues
-- [Initiate Payment](endpoints/water-tax/initiate-payment.md) - Pay water tax
+### 4. Payment Processing
+- [Pay Now](docs/endpoints/pay-now.md) - Initiate payment for taxes
+- [Check Last Payment](docs/endpoints/check-last-payment.md) - View last payment details
 
-### Community Hall Booking
-- [List Halls](endpoints/community-hall/list-halls.md) - View available halls
-- [Check Availability](endpoints/community-hall/check-availability.md) - Check hall availability
-- [Book Hall](endpoints/community-hall/book-hall.md) - Submit booking request
+### 5. Invoice Management
+- [Download Invoice](docs/endpoints/download-invoice.md) - Get and download invoices
 
-### Transactions
-- [Transaction History](endpoints/transaction-history.md) - View payment history
+### 6. Notifications
+- [Send Notifications](docs/NOTIFICATIONS.md) - Send messages to users (broadcast/individual)
 
-## Base Information
+---
+
+## API Endpoint URL Structure
+
+### Base URL
+```
+Production: https://api.varansinagar.gov.in/api
+Staging: https://staging-api.varansinagar.gov.in/api
+```
+
+### Endpoint URL Pattern
+```
+{BASE_URL}/{RESOURCE}/{ACTION}
+
+Examples:
+- POST   {BASE_URL}/auth/send-otp
+- POST   {BASE_URL}/auth/verify-otp
+- GET    {BASE_URL}/properties/list
+- POST   {BASE_URL}/dues/check
+- POST   {BASE_URL}/payment/initiate
+- POST   {BASE_URL}/payment/last-payment
+- POST   {BASE_URL}/invoice/months
+- POST   {BASE_URL}/invoice/download
+- POST   {BASE_URL}/notification/send-individual
+- POST   {BASE_URL}/notification/send-broadcast
+```
+
+### Complete Endpoint Reference
+
+| S.No | Resource | Action | Method | Endpoint | Purpose |
+|------|----------|--------|--------|----------|----------|
+| 1 | `auth` | `send-otp` | POST | `/auth/send-otp` | Send OTP for authentication |
+| 2 | `auth` | `verify-otp` | POST | `/auth/verify-otp` | Verify OTP and get JWT token |
+| 3 | `properties` | `list` | GET | `/properties/list` | List all properties for user |
+| 4 | `dues` | `check` | POST | `/dues/check` | Get dues details for property |
+| 5 | `payment` | `initiate` | POST | `/payment/initiate` | Initiate payment (Pay Now) |
+| 6 | `payment` | `last-payment` | POST | `/payment/last-payment` | Get last payment information |
+| 7 | `invoice` | `months` | POST | `/invoice/months` | Get available invoice months |
+| 8 | `invoice` | `download` | POST | `/invoice/download` | Download invoice copy |
+| 9 | `notification` | `send-individual` | POST | `/notification/send-individual` | Send message to individual user |
+| 10 | `notification` | `send-broadcast` | POST | `/notification/send-broadcast` | Send broadcast message to users |
+
+> **Note**: Final endpoint URLs and structure will be decided and confirmed by Varanasi Nagar Nigam Technical Team. Above URLs are recommended based on REST best practices and WhatsApp Bot integration requirements.
+
+## API Specifications
 
 - **Base URL**: https://api.varansinagar.gov.in/api
-- **API Version**: v1.0
+- **API Version**: 1.0
+- **Total Endpoints**: 10
 - **Authentication**: JWT Bearer Token
+- **Token Validity**: 24 hours
 - **Content-Type**: application/json
-- **Rate Limit**: 60 requests per minute per user
+- **Rate Limit**: 60 requests/minute per user
+- **OTP Validity**: 5 minutes
+- **OTP Rate Limit**: 5 requests/hour per mobile
 
-## Shared Resources
+## Documentation Files
 
-- [Base Configuration](shared/base-config.md) - API base URLs and settings
-- [Common Responses](shared/common-responses.md) - Standard response formats and error codes
-- [Authentication Guide](shared/authentication.md) - Detailed authentication information
+- **README.md** (this file) - Overview and quick reference
+- **QUICK_START.md** - 5-minute integration guide
+- **DOCUMENTATION_SUMMARY.md** - Complete changes and summary
+- **docs/endpoints/INDEX.md** - All endpoints with table reference
+- **docs/endpoints/** - Detailed documentation for each endpoint
+- **docs/NOTIFICATIONS.md** - Message format for notifications
+- **docs/TROUBLESHOOTING.md** - FAQ and troubleshooting
+- **openapi.yaml** - OpenAPI 3.0 specification (for automation)
 
-## Code Examples
+## Additional Resources
 
-### JavaScript/Node.js
-```javascript
-// Using fetch API
-const response = await fetch(
-  'https://api.varansinagar.gov.in/api/property/mobile-properties?mobile_no=9876543210',
-  {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${jwtToken}`,
-      'Content-Type': 'application/json'
-    }
-  }
-);
-const data = await response.json();
-```
+- [Endpoints Reference Guide](docs/endpoints/INDEX.md) - Complete endpoint documentation
+- [Notifications Guide](docs/NOTIFICATIONS.md) - Message format and templates
+- [Troubleshooting & FAQ](docs/TROUBLESHOOTING.md) - Common questions and issues
+- [Quick Start Guide](QUICK_START.md) - 5-minute integration guide
+- [Documentation Summary](DOCUMENTATION_SUMMARY.md) - Overview of all changes
 
-### Python
-```python
-import requests
+## API Integration Example
 
-headers = {
-    'Authorization': f'Bearer {jwt_token}',
-    'Content-Type': 'application/json'
-}
+For complete step-by-step integration examples, see [QUICK_START.md](QUICK_START.md)
 
-response = requests.get(
-    'https://api.varansinagar.gov.in/api/property/mobile-properties',
-    params={'mobile_no': '9876543210'},
-    headers=headers
-)
-data = response.json()
-```
-
-### cURL
+Basic authentication pattern:
 ```bash
-curl -X GET "https://api.varansinagar.gov.in/api/property/mobile-properties?mobile_no=9876543210" \
+# Step 1: Send OTP
+curl -X POST https://api.varansinagar.gov.in/api/auth/send-otp \
+  -H "Content-Type: application/json" \
+  -d '{"mobile_no": "9876543210"}'
+
+# Get token from verify-otp response
+# Step 2: Use token in all subsequent requests
+curl -X GET https://api.varansinagar.gov.in/api/properties/list \
   -H "Authorization: Bearer <jwt_token>" \
   -H "Content-Type: application/json"
 ```
 
-## Common Workflows
+## WhatsApp Bot Integration Flow
 
-### Check and Pay Property Tax
-1. [Send OTP](endpoints/authentication/send-otp.md)
-2. [Verify OTP](endpoints/authentication/verify-otp.md) → Get token
-3. [Get Linked Properties](endpoints/property-tax/get-properties.md)
-4. [Get Property Details](endpoints/property-tax/get-property-details.md)
-5. [Initiate Payment](endpoints/property-tax/initiate-payment.md)
-6. [Check Transaction History](endpoints/transaction-history.md)
+The API is designed for this 5-step user flow:
 
-### Check and Pay Water Tax
-1. [Send OTP](endpoints/authentication/send-otp.md)
-2. [Verify OTP](endpoints/authentication/verify-otp.md) → Get token
-3. [Get Connections](endpoints/water-tax/get-connections.md)
-4. [Check Dues](endpoints/water-tax/check-dues.md)
-5. [Initiate Payment](endpoints/water-tax/initiate-payment.md)
-6. [Check Transaction History](endpoints/transaction-history.md)
-
-### Book Community Hall
-1. [Send OTP](endpoints/authentication/send-otp.md)
-2. [Verify OTP](endpoints/authentication/verify-otp.md) → Get token
-3. [List Halls](endpoints/community-hall/list-halls.md)
-4. [Check Availability](endpoints/community-hall/check-availability.md)
-5. [Book Hall](endpoints/community-hall/book-hall.md)
-6. [Check Transaction History](endpoints/transaction-history.md)
+```
+User sends /start to WhatsApp Bot
+    ↓
+1. Bot asks for phone number
+    ↓ (User provides number)
+2. Bot sends OTP (Send OTP endpoint)
+    ↓ (User enters OTP)
+3. Bot verifies OTP, gets JWT token (Verify OTP endpoint)
+    ↓
+4. Bot shows menu:
+   ├─ Check Dues → List Properties → Check Dues endpoint
+   ├─ Pay Now → Select Tax → Pay Now endpoint
+   ├─ Last Payment → Check Last Payment endpoint
+   └─ Download Invoice → Get Months → Download Invoice endpoint
+    ↓
+5. Bot sends notifications (Notification endpoint)
+```
 
 ## Error Handling
 
-All errors follow a standard format. See [Common Responses](shared/common-responses.md) for detailed error codes and HTTP status codes.
+All endpoints return standard response format:
 
-Example error response:
+**Success Response:**
 ```json
 {
-  "status": false,
-  "message": "Invalid or expired authentication token",
-  "error_code": "AUTH_FAILED"
+  "status": true,
+  "message": "Operation successful",
+  "data": { ... }
 }
 ```
 
-## Security Considerations
+**Error Response:**
+```json
+{
+  "status": false,
+  "message": "Error description",
+  "error_code": "ERROR_CODE",
+  "details": { ... }
+}
+```
 
-1. Always use HTTPS for API requests
-2. Store JWT tokens securely (HTTPOnly cookies recommended)
-3. Never share OTP with anyone
-4. Keep mobile numbers confidential
-5. Implement token refresh mechanism
+Common error codes:
+- `INVALID_TOKEN` (401) - JWT token invalid or expired
+- `INVALID_MOBILE` (400) - Phone number format invalid
+- `PROPERTY_NOT_FOUND` (404) - Property doesn't exist
+- `RATE_LIMIT` (429) - Too many requests
+- `SERVER_ERROR` (500) - Internal server error
 
-## Support
+See [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for complete error reference.
 
-For API support and issues, contact:
+## Technical Notes for Implementation
+
+### URL Structure Recommendation
+The recommended endpoint structure follows REST best practices:
+- Resource-based URLs (e.g., `/properties`, `/dues`, `/payment`)
+- Actions as sub-resources (e.g., `/auth/send-otp`)
+- Consistent HTTP methods (GET for retrievals, POST for actions)
+
+### Request Headers Required
+```
+Content-Type: application/json
+Authorization: Bearer <jwt_token>  (All endpoints except auth)
+```
+
+### Payment Integration
+When user initiates payment:
+1. Call `/payment/initiate` endpoint with tax details
+2. Endpoint returns payment link (Razorpay URL)
+3. Redirect user to payment link
+4. After payment, send confirmation via notification
+
+### Notification Integration
+Send notifications for:
+- Payment confirmations
+- Payment reminders (due date approaching)
+- Invoice generation alerts
+- System maintenance notices
+- Promotional offers
+
+See [NOTIFICATIONS.md](docs/NOTIFICATIONS.md) for message templates.
+
+---
+
+## Support & Contact
+
+For API support and issues:
 - **Email**: api-support@varansinagar.gov.in
-- **Phone**: +91-XXXX-XXXX-XXX
+- **Documentation Issues**: Check [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+- **Integration Help**: Contact Varanasi Nagar Nigam Technical Team
 - **Hours**: Monday - Friday, 9:00 AM - 5:00 PM IST
-
-## API Changelog
-
-### Version 1.0 (Current)
-- Initial release
-- Property tax management
-- Water tax management
-- Community hall booking
-- Transaction history
-
-## License
-
-This API documentation is provided by Varanasi Nagar Nigam. Unauthorized use or reproduction is prohibited.

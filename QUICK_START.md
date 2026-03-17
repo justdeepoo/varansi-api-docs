@@ -1,302 +1,348 @@
-# 🎉 Complete API Documentation - READY TO USE!
+# Quick Start Guide
 
-## ✅ What You Have
+This guide will help you integrate with the Varanasi Nagar Nigam WhatsApp Bot API in 5 minutes.
 
-You now have a **complete, professional-grade API documentation suite** for the Varanasi Nagar Nigam Chatbot API, ready to use, share, and host.
+## The 5-Step Flow
 
----
-
-## 📦 Complete Package Includes
-
-### Core Documentation (3 Files)
-1. **API_COMPLETE_REFERENCE.md** - All 12 endpoints in one comprehensive reference
-2. **openapi.yaml** - Machine-readable OpenAPI 3.0 specification
-3. **Postman_Collection.json** - Ready-to-use Postman collection for testing
-
-### Setup & Usage Guides (4 Files)
-- **README.md** - Main entry point and overview
-- **INDEX.md** - File index and navigation (NEW)
-- **USING_API_FILES.md** - How to use each file format
-- **COMPLETE_API_DOCS_SUMMARY.md** - Quick summary of all files
-
-### Detailed Documentation (14 Files)
-- **docs/TROUBLESHOOTING.md** - FAQ and support guide
-- **docs/shared/** - Reusable content (3 files)
-- **docs/endpoints/** - All 12 endpoints (13 files total)
-- **docs/examples/** - Code examples (2 files)
-
-### Additional Resources (3 Files)
-- **STRUCTURE.md** - Documentation structure guide
-- **COMPLETION_SUMMARY.md** - Project completion report
-
----
-
-## 🚀 Quick Start (Choose Your Path)
-
-### Path 1: Read & Learn
 ```
-1. Open: README.md
-2. Reference: API_COMPLETE_REFERENCE.md
-3. Details: docs/endpoints/INDEX.md
-4. Help: docs/TROUBLESHOOTING.md
-```
-⏱️ Time: 15-30 minutes
-
----
-
-### Path 2: Test Immediately (Recommended)
-```
-1. Download Postman: https://www.postman.com/downloads/
-2. Import: Postman_Collection.json into Postman
-3. Set base_url: https://api.varansinagar.gov.in/api
-4. Test all endpoints with pre-configured requests
-```
-⏱️ Time: 5 minutes
-
----
-
-### Path 3: Integrate Into Your App
-```
-1. Review: docs/examples/ (Node.js or Python)
-2. Reference: API_COMPLETE_REFERENCE.md
-3. Generate SDK: Use openapi.yaml with code generation tools
-4. Implement: Follow example patterns
-```
-⏱️ Time: 30-60 minutes
-
----
-
-### Path 4: Host Documentation
-```
-1. Option A: GitHub Pages (github.com → Create repo → Enable Pages)
-2. Option B: ReadTheDocs (readthedocs.org → Import repo)
-3. Option C: Swagger UI (Self-hosted with openapi.yaml)
-4. Option D: Netlify/Vercel (Deploy markdown docs)
-```
-⏱️ Time: 15-30 minutes
-
----
-
-## 📄 File Summary
-
-| File | Format | Purpose | Best For |
-|------|--------|---------|----------|
-| README.md | Markdown | Overview & quick start | Getting started |
-| API_COMPLETE_REFERENCE.md | Markdown | Complete API reference | Lookup & reference |
-| openapi.yaml | YAML | API specification | Code generation & automation |
-| Postman_Collection.json | JSON | Testable API collection | Testing & collaboration |
-| INDEX.md | Markdown | File navigation guide | Finding what you need |
-| USING_API_FILES.md | Markdown | How to use files | Integration help |
-| docs/examples/*.md | Markdown | Code examples | Implementation |
-| docs/TROUBLESHOOTING.md | Markdown | FAQ & support | Problem solving |
-
----
-
-## 🎯 Immediate Actions
-
-### ✅ Action 1: Review Documentation
-```
-Time: 10 minutes
-Files: README.md → API_COMPLETE_REFERENCE.md
-Result: Understand API capabilities
-```
-
-### ✅ Action 2: Test with Postman
-```
-Time: 5 minutes
-Files: Postman_Collection.json
-Result: Successfully test endpoints
-```
-
-### ✅ Action 3: Share with Team
-```
-Time: 5 minutes
-Share: All files + explain using USING_API_FILES.md
-Result: Team can access documentation
-```
-
-### ✅ Action 4: Choose Hosting Option
-```
-Time: 15 minutes
-Read: USING_API_FILES.md
-Result: Select and setup hosting
+1. Authenticate → 2. List Properties → 3. Check Dues → 4. Last Payment → 5. Download Invoice
 ```
 
 ---
 
-## 📊 Documentation Statistics
+## Step 1: Authenticate User
 
-### Coverage
-- ✅ **12 API Endpoints** - All documented
-- ✅ **Request/Response Examples** - Each endpoint
-- ✅ **Error Scenarios** - Covered
-- ✅ **Code Examples** - 2 languages
-- ✅ **Troubleshooting** - FAQ included
-- ✅ **Multiple Formats** - 3 types
+### Send OTP
 
-### Quality
-- ✅ **Production Ready** - Fully tested
-- ✅ **OpenAPI 3.0 Compliant** - Industry standard
-- ✅ **Postman Compatible** - Easy import
-- ✅ **GitHub Ready** - Can be hosted immediately
-- ✅ **Cross-referenced** - Easy navigation
-- ✅ **Search-friendly** - All files indexed
-
----
-
-## 🔗 Important Links
-
-### Documentation Files (Start Here)
-- **Main Entry**: [README.md](README.md)
-- **Complete Reference**: [API_COMPLETE_REFERENCE.md](API_COMPLETE_REFERENCE.md)
-- **File Navigator**: [INDEX.md](INDEX.md)
-- **Usage Guide**: [USING_API_FILES.md](USING_API_FILES.md)
-
-### Testing Files
-- **Postman Collection**: [Postman_Collection.json](Postman_Collection.json)
-- **OpenAPI Spec**: [openapi.yaml](openapi.yaml)
-
-### Detailed Docs
-- **Endpoints**: [docs/endpoints/](docs/endpoints/)
-- **Examples**: [docs/examples/](docs/examples/)
-- **FAQ**: [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
-
----
-
-## 💾 File Location
-
-All files are located in:
-```
-/Users/work/Downloads/varansi-api-docs/
-```
-
-### Directory Structure
-```
-varansi-api-docs/
-├── README.md                           ← START HERE
-├── API_COMPLETE_REFERENCE.md           ← COMPLETE REFERENCE
-├── INDEX.md                            ← NAVIGATION GUIDE
-├── openapi.yaml                        ← FOR AUTOMATION
-├── Postman_Collection.json             ← FOR TESTING
-├── USING_API_FILES.md                  ← HOW TO USE
-├── docs/
-│   ├── endpoints/
-│   ├── examples/
-│   ├── shared/
-│   └── TROUBLESHOOTING.md
-└── [Other documentation files]
-```
-
----
-
-## 🎓 Learning Paths
-
-### For End Users (Non-Technical)
-```
-1. README.md → Overview
-2. docs/TROUBLESHOOTING.md → FAQ
-3. Ask for Postman collection → Test
-Result: Understand what API can do
-```
-
-### For Developers
-```
-1. README.md → Overview
-2. API_COMPLETE_REFERENCE.md → Details
-3. docs/examples/ → Code samples
-4. Implement using provided examples
-Result: Integrate API into application
-```
-
-### For QA/Testers
-```
-1. Import Postman_Collection.json
-2. Setup environment variables
-3. Run all endpoints
-4. Test error scenarios
-Result: Verify API functionality
-```
-
-### For DevOps/Operations
-```
-1. openapi.yaml → API specification
-2. USING_API_FILES.md → Integration
-3. Setup monitoring/logging
-Result: Manage API deployment
-```
-
----
-
-## 🚢 Deployment Options
-
-### Quick Deploy (Recommended for Quick Preview)
 ```bash
-# Local server already running on port 8000
-# Visit: http://localhost:8000
+curl -X POST "https://api.varansinagar.gov.in/api/auth/send-otp" \
+  -H "Content-Type: application/json" \
+  -d '{"mobile_no": "9876543210"}'
 ```
 
-### GitHub Pages (Free, Permanent)
+**Response:**
+```json
+{
+  "status": true,
+  "message": "OTP sent successfully",
+  "data": {
+    "request_id": "REQ-20260317-001234",
+    "otp_expiry": "5 minutes"
+  }
+}
+```
+
+### Verify OTP
+
 ```bash
-cd /Users/work/Downloads/varansi-api-docs
-git init
-git add .
-git commit -m "Initial API documentation"
-git remote add origin https://github.com/YOUR-USER/varansi-api-docs.git
-git push -u origin main
-
-# Enable Pages in repo settings
-# Available at: https://YOUR-USER.github.io/varansi-api-docs/
+curl -X POST "https://api.varansinagar.gov.in/api/auth/verify-otp" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mobile_no": "9876543210",
+    "otp": "458921",
+    "request_id": "REQ-20260317-001234"
+  }'
 ```
 
-### ReadTheDocs (Professional)
-```
-1. Push repo to GitHub
-2. Import at https://readthedocs.org
-3. Auto-builds on every push
-4. Available at: https://varansi-api-docs.readthedocs.io/
+**Response:**
+```json
+{
+  "status": true,
+  "message": "OTP verified successfully",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "expires_in": 86400
+  }
+}
 ```
 
-### Swagger UI (Interactive)
+**Save the token for next 24 hours of API calls.**
+
+---
+
+## Step 2: List Properties
+
+Show user all their properties.
+
 ```bash
-docker run -p 8080:8080 \
-  -e SWAGGER_JSON=/openapi.yaml \
-  -v /Users/work/Downloads/varansi-api-docs/openapi.yaml:/openapi.yaml \
-  swaggerapi/swagger-ui
+curl -X GET "https://api.varansinagar.gov.in/api/properties/list?mobile_no=9876543210" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json"
+```
+
+**Response:**
+```json
+{
+  "status": true,
+  "message": "Properties retrieved successfully",
+  "data": {
+    "properties": [
+      {
+        "property_id": "VN-PT-102345",
+        "address": "123, Sigra, Varanasi",
+        "outstanding_amount": 3500
+      },
+      {
+        "property_id": "VN-PT-102346",
+        "address": "456, Dashashwamedh, Varanasi",
+        "outstanding_amount": 1200
+      }
+    ]
+  }
+}
+```
+
+**User selects one property to proceed.**
+
+---
+
+## Step 3: Check Dues
+
+Get detailed dues breakdown for selected property.
+
+```bash
+curl -X POST "https://api.varansinagar.gov.in/api/dues/check" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "property_id": "VN-PT-102345",
+    "mobile_no": "9876543210"
+  }'
+```
+
+**Response:**
+```json
+{
+  "status": true,
+  "message": "Dues retrieved successfully",
+  "data": {
+    "property_id": "VN-PT-102345",
+    "address": "123, Sigra, Varanasi",
+    "property_type": "Residential",
+    "last_payment_date": "05-02-2025",
+    "last_payment_amount": 1500,
+    "total_outstanding": 3500,
+    "dues": {
+      "property_tax": 2000,
+      "water_tax": 1000,
+      "sewerage_tax": 500
+    }
+  }
+}
+```
+
+**From here, user can:**
+- **Pay Now** → Go to Step 3.1
+- **Check Last Payment** → Go to Step 4
+- **Download Invoice** → Go to Step 5
+
+---
+
+## Step 3.1: Pay Now (Optional)
+
+Initiate payment for selected taxes.
+
+```bash
+curl -X POST "https://api.varansinagar.gov.in/api/payment/initiate" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "property_id": "VN-PT-102345",
+    "mobile_no": "9876543210",
+    "tax_types": ["property_tax", "water_tax"],
+    "amount": 3000
+  }'
+```
+
+**Response:**
+```json
+{
+  "status": true,
+  "message": "Payment initiated successfully",
+  "data": {
+    "transaction_id": "TXN-20260317-001234",
+    "amount": 3000,
+    "payment_link": "https://rzp.io/l/payment-link-abc123xyz",
+    "status": "PENDING"
+  }
+}
+```
+
+**Share the `payment_link` with user. User completes payment on that link.**
+
+---
+
+## Step 4: Check Last Payment
+
+Show user their last payment details.
+
+```bash
+curl -X POST "https://api.varansinagar.gov.in/api/payment/last-payment" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "property_id": "VN-PT-102345",
+    "mobile_no": "9876543210"
+  }'
+```
+
+**Response:**
+```json
+{
+  "status": true,
+  "message": "Last payment retrieved successfully",
+  "data": {
+    "property_id": "VN-PT-102345",
+    "last_payment": {
+      "transaction_id": "TXN-20250205-000856",
+      "payment_date": "05-02-2025",
+      "amount_paid": 1500,
+      "status": "SUCCESS"
+    }
+  }
+}
 ```
 
 ---
 
-## 📋 Verification Checklist
+## Step 5: Download Invoice
 
-### Documentation
-- ✅ All 12 endpoints documented
-- ✅ Request/response examples provided
-- ✅ Error codes documented
-- ✅ Authentication explained
-- ✅ Rate limiting documented
-- ✅ Examples provided (Node.js, Python)
-- ✅ FAQ/Troubleshooting included
-- ✅ Quick start guide available
+Get list of invoices and download.
 
-### File Formats
-- ✅ Markdown (human-readable)
-- ✅ OpenAPI 3.0 (machine-readable)
-- ✅ Postman Collection (testable)
+### Get Invoice Months
 
-### Ready to Use
-- ✅ Can be hosted immediately
-- ✅ Can be shared with team
-- ✅ Can be integrated into projects
-- ✅ Can be tested with Postman
+```bash
+curl -X POST "https://api.varansinagar.gov.in/api/invoice/months" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "property_id": "VN-PT-102345",
+    "mobile_no": "9876543210"
+  }'
+```
+
+**Response:**
+```json
+{
+  "status": true,
+  "message": "Invoice months retrieved successfully",
+  "data": {
+    "available_months": [
+      {
+        "month_year": "02-02-2026",
+        "display_text": "February 2026",
+        "amount": 1200
+      },
+      {
+        "month_year": "01-01-2026",
+        "display_text": "January 2026",
+        "amount": 1200
+      }
+    ]
+  }
+}
+```
+
+### Download Invoice
+
+```bash
+curl -X POST "https://api.varansinagar.gov.in/api/invoice/download" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "property_id": "VN-PT-102345",
+    "mobile_no": "9876543210",
+    "month_year": "02-02-2026",
+    "format": "pdf"
+  }'
+```
+
+**Response:**
+```json
+{
+  "status": true,
+  "message": "Invoice retrieved successfully",
+  "data": {
+    "property_id": "VN-PT-102345",
+    "invoice_number": "INV-VN-102345-202602",
+    "invoice_url": "https://storage.varansinagar.gov.in/invoices/INV-VN-102345-202602.pdf",
+    "download_link": "https://storage.varansinagar.gov.in/invoices/INV-VN-102345-202602.pdf",
+    "summary": {
+      "property_tax": 0,
+      "water_tax": 1200,
+      "sewerage_tax": 0,
+      "total_amount": 1200
+    }
+  }
+}
+```
+
+**Share the `download_link` with user to download invoice.**
 
 ---
 
-## 🎯 Next Steps
+## Send Notifications to Users
 
-### Today
-1. ✅ Review README.md
-2. ✅ Import Postman collection
-3. ✅ Test one endpoint
+You can send notifications when:
+- User makes a payment → Send payment confirmation
+- New invoice is generated → Send notification
+- Payment is due → Send reminder
+
+See [Notifications Documentation](docs/NOTIFICATIONS.md) for detailed format.
+
+**Example: Send Payment Confirmation**
+
+```bash
+curl -X POST "https://api.varansinagar.gov.in/api/notification/send-individual" \
+  -H "Authorization: Bearer admin-token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "notification_type": "payment_confirmation",
+    "recipient_type": "individual",
+    "mobile_no": "9876543210",
+    "content": {
+      "owner_name": "Rahul Sharma",
+      "property_id": "VN-PT-102345",
+      "transaction_id": "TXN-20260317-001234",
+      "amount_paid": 3500,
+      "payment_date": "17-03-2026"
+    }
+  }'
+```
+
+---
+
+## Common Error Codes
+
+| Code | Meaning | Solution |
+|------|---------|----------|
+| INVALID_TOKEN | Token expired or invalid | Ask user to login again |
+| INVALID_MOBILE | Wrong mobile format | Validate 10-digit number |
+| PROPERTY_NOT_FOUND | Property doesn't exist | Show error message |
+| INVALID_AMOUNT | Amount mismatch | Verify dues amount |
+| RATE_LIMIT | Too many requests | Wait and retry |
+
+---
+
+## Integration Checklist
+
+- [ ] Implement OTP send and verify
+- [ ] Implement property listing
+- [ ] Implement check dues
+- [ ] Implement pay now (with payment gateway)
+- [ ] Implement last payment check
+- [ ] Implement invoice months & download
+- [ ] Add error handling for all responses
+- [ ] Add notification system
+- [ ] Test with live server
+- [ ] Deploy to production
+
+---
+
+## Support
+
+For API issues: api-support@varansinagar.gov.in
+For integration help: Contact Varanasi Nagar Nigam WhatsApp Team
 
 ### This Week
 1. Review full API_COMPLETE_REFERENCE.md

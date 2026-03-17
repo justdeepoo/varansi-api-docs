@@ -1,40 +1,44 @@
-# Citizen Login - Verify OTP
+# Verify OTP
 
-## Endpoint Details
+Verify the OTP and get authentication token for subsequent API calls.
 
-| Property | Value |
-|----------|-------|
-| **Method** | POST |
-| **URL** | `/chatbot/login/verify-otp` |
-| **Authentication** | Not Required |
-| **Rate Limit** | 10 attempts per OTP |
+## Endpoint
 
-## Description
-Verify the OTP sent to the citizen's mobile number and obtain a JWT authentication token. This is the second step of the login process.
+```
+POST /auth/verify-otp
+```
 
 ## Request
 
-### Request Headers
+### Header
 ```
 Content-Type: application/json
 ```
 
-### Request Body
+### Body
 ```json
 {
   "mobile_no": "9876543210",
   "otp": "458921",
-  "otp_type": "ChatbotLogin"
+  "request_id": "REQ-20260317-001234"
 }
 ```
 
-### Request Parameters
+### Parameters
+- **mobile_no** (string, required): User's 10-digit mobile number
+- **otp** (string, required): 6-digit OTP received
+- **request_id** (string, required): Request ID from send-otp response
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `mobile_no` | String | Yes | 10-digit mobile number |
-| `otp` | String | Yes | 6-digit OTP received via SMS |
-| `otp_type` | String | Yes | Type of OTP. Value: `ChatbotLogin` |
+### Example Request
+```bash
+curl -X POST "https://api.varansinagar.gov.in/api/auth/verify-otp" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mobile_no": "9876543210",
+    "otp": "458921",
+    "request_id": "REQ-20260317-001234"
+  }'
+```
 
 ## Response
 
@@ -42,37 +46,27 @@ Content-Type: application/json
 ```json
 {
   "status": true,
-  "message": "Login successful",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ODc2NTQzMjEwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTcxMzIwODAwfQ.NX3-rI0G79pz8IKv2K0Qs3pj8H6_lVS_FVbSsR-1l4E"
+  "message": "OTP verified successfully",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "token_type": "Bearer",
+    "expires_in": 86400,
+    "mobile_no": "9876543210",
+    "user_id": "USR-102345"
+  }
 }
 ```
 
-### Error Response Examples
-
-**Invalid OTP (400)**
+### Error Response (400/401/500)
 ```json
 {
   "status": false,
-  "message": "Invalid or expired OTP",
-  "error_code": "OTP_INVALID"
-}
-```
-
-**OTP Expired (400)**
-```json
-{
-  "status": false,
-  "message": "OTP has expired. Please request a new one",
-  "error_code": "OTP_EXPIRED"
-}
-```
-
-**Too Many Attempts (429)**
-```json
-{
-  "status": false,
-  "message": "Maximum OTP verification attempts exceeded",
-  "error_code": "RATE_LIMIT_EXCEEDED"
+  "message": "OTP verification failed",
+  "error_code": "INVALID_OTP",
+  "details": {
+    "error": "OTP is invalid or expired",
+    "attempts_remaining": 2
+  }
 }
 ```
 
@@ -80,46 +74,46 @@ Content-Type: application/json
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `status` | Boolean | Indicates success or failure |
-| `message` | String | Description of the result |
-| `token` | String | JWT token for authentication (only on success) |
+| status | boolean | Request success indicator |
+| message | string | Response message |
+| data.token | string | JWT authentication token |
+| data.token_type | string | Token type (Bearer) |
+| data.expires_in | number | Token validity in seconds (24 hours) |
+| data.mobile_no | string | Authenticated mobile number |
+| data.user_id | string | User identifier |
+
+## Error Codes
+
+| Code | Status | Description |
+|------|--------|-------------|
+| SUCCESS | 200 | OTP verified successfully |
+| INVALID_OTP | 400 | OTP is incorrect |
+| OTP_EXPIRED | 400 | OTP has expired |
+| INVALID_REQUEST_ID | 400 | Request ID is invalid or expired |
+| TOO_MANY_ATTEMPTS | 429 | Too many failed attempts (max 3) |
+| INVALID_TOKEN | 401 | Authorization failed |
+| SERVER_ERROR | 500 | Internal server error |
+
+## Using the Token
+
+After successful verification, include the token in all API requests:
+
+```bash
+curl -X GET "https://api.varansinagar.gov.in/api/properties/list?mobile_no=9876543210" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json"
+```
 
 ## Token Details
 
-- **Token Type**: Bearer Token
-- **Validity**: 24 hours from generation
-- **Storage**: Store securely in HTTPOnly cookie or secure storage
-- **Usage**: Include in `Authorization` header for authenticated requests as `Bearer <token>`
+- **Validity**: 24 hours from issuance
+- **Type**: JWT (JSON Web Token)
+- **Refresh**: Not applicable (user must re-authenticate)
+- **Scope**: All user endpoints for the authenticated user
 
-## Usage Notes
+## Notes
 
-- Maximum 10 verification attempts per OTP
-- OTP must be verified within 10 minutes of generation
-- Successful verification returns a JWT token valid for 24 hours
-- Use the returned token for all subsequent authenticated API calls
-- On token expiration, user must login again
-
-## Example cURL Request
-
-```bash
-curl -X POST https://api.varansinagar.gov.in/api/chatbot/login/verify-otp \
-  -H "Content-Type: application/json" \
-  -d '{
-    "mobile_no": "9876543210",
-    "otp": "458921",
-    "otp_type": "ChatbotLogin"
-  }'
-```
-
-## Example Usage of Token
-
-After receiving the token, use it in subsequent requests:
-
-```bash
-curl -X GET https://api.varansinagar.gov.in/api/property/mobile-properties?mobile_no=9876543210 \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-```
-
-## Related Endpoints
-- [Send OTP](send-otp.md) - First step of login
-- [Get Linked Properties](../property-tax/get-properties.md) - Example authenticated endpoint
+- Maximum 3 OTP verification attempts
+- After 3 failed attempts, user must request new OTP
+- Token is single-use per user
+- Logging out is not required, token automatically expires

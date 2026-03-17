@@ -1,58 +1,106 @@
-# API Endpoints Index
+# API Endpoints Documentation
 
-Complete list of all API endpoints organized by service category.
+Complete list of all API endpoints for Varanasi Nagar Nigam WhatsApp Bot.
 
 ## Authentication Endpoints
 
-### Citizen Login
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/chatbot/login/send-otp` | [Send OTP](authentication/send-otp.md) |
-| POST | `/chatbot/login/verify-otp` | [Verify OTP](authentication/verify-otp.md) |
+| Endpoint | Method | Purpose | Link |
+|----------|--------|---------|------|
+| /auth/send-otp | POST | Send OTP to mobile number | [send-otp.md](authentication/send-otp.md) |
+| /auth/verify-otp | POST | Verify OTP and get auth token | [verify-otp.md](authentication/verify-otp.md) |
 
-## Property Tax Endpoints
+## Property Management Endpoints
 
-### Property Management
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/property/mobile-properties` | [Get Linked Properties](property-tax/get-properties.md) |
-| GET | `/property/details` | [Get Property Details](property-tax/get-property-details.md) |
-| POST | `/property/payment/initiate` | [Initiate Payment](property-tax/initiate-payment.md) |
+| Endpoint | Method | Purpose | Link |
+|----------|--------|---------|------|
+| /properties/list | GET | Get all properties for user | [list-properties.md](list-properties.md) |
 
-## Water Tax Endpoints
+## Dues & Payment Endpoints
 
-### Water Connection Management
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/water/mobile-connections` | [Get Connections](water-tax/get-connections.md) |
-| GET | `/water/dues` | [Check Dues](water-tax/check-dues.md) |
-| POST | `/water/payment/initiate` | [Initiate Payment](water-tax/initiate-payment.md) |
+| Endpoint | Method | Purpose | Link |
+|----------|--------|---------|------|
+| /dues/check | POST | Get dues breakdown for property | [check-dues.md](check-dues.md) |
+| /payment/initiate | POST | Initiate payment for taxes | [pay-now.md](pay-now.md) |
+| /payment/last-payment | POST | Get last payment details | [check-last-payment.md](check-last-payment.md) |
 
-## Community Hall Endpoints
+## Invoice Endpoints
 
-### Hall Booking
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/community-hall/list` | [List Halls](community-hall/list-halls.md) |
-| POST | `/community-hall/availability` | [Check Availability](community-hall/check-availability.md) |
-| POST | `/community-hall/book` | [Book Hall](community-hall/book-hall.md) |
+| Endpoint | Method | Purpose | Link |
+|----------|--------|---------|------|
+| /invoice/months | POST | Get list of invoice months | [download-invoice.md](download-invoice.md) |
+| /invoice/download | POST | Download invoice copy | [download-invoice.md](download-invoice.md) |
 
-## Transaction Endpoints
+## Notification Endpoints
 
-### Transaction Management
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/transactions/history` | [Transaction History](transaction-history.md) |
+| Endpoint | Method | Purpose | Link |
+|----------|--------|---------|------|
+| /notification/send-individual | POST | Send message to user | [../NOTIFICATIONS.md](../NOTIFICATIONS.md) |
+| /notification/send-broadcast | POST | Send broadcast message | [../NOTIFICATIONS.md](../NOTIFICATIONS.md) |
 
-## Authentication Requirements
+---
 
-- **No Authentication**: `/chatbot/login/send-otp`, `/chatbot/login/verify-otp`
-- **JWT Required**: All other endpoints
+## Flow Diagram
 
-## Rate Limiting
+```
+1. AUTHENTICATE
+   ├─ Send OTP → send-otp.md
+   └─ Verify OTP → verify-otp.md
 
-- **Standard endpoints**: 30 requests per minute
-- **Payment endpoints**: 10 requests per minute
-- **OTP endpoints**: 5 requests per 5 minutes
+2. LIST PROPERTIES
+   └─ Get Properties → list-properties.md
 
-See [Base Configuration](../shared/base-config.md) for detailed rate limiting information.
+3. CHECK DUES
+   └─ Check Property Dues → check-dues.md
+
+4. PAYMENT OPTIONS
+   ├─ Pay Now → pay-now.md
+   ├─ Last Payment → check-last-payment.md
+   └─ View Invoice → download-invoice.md
+
+5. NOTIFICATIONS (OPTIONAL)
+   └─ Send Messages → ../NOTIFICATIONS.md
+```
+
+---
+
+## Quick Reference
+
+### Authentication
+- Always include JWT token in `Authorization: Bearer <token>` header
+- Token validity: 24 hours
+- Rate limit: 5 OTP requests per hour
+
+### Response Format
+All responses follow standard format:
+```json
+{
+  "status": true/false,
+  "message": "...",
+  "data": { ... },
+  "error_code": "..." (if error)
+}
+```
+
+### Error Codes
+- `INVALID_TOKEN` - JWT token invalid/expired (401)
+- `INVALID_MOBILE` - Mobile number invalid (400)
+- `PROPERTY_NOT_FOUND` - Property doesn't exist (404)
+- `RATE_LIMIT` - Too many requests (429)
+- `SERVER_ERROR` - Internal server error (500)
+
+---
+
+## Base URL
+
+```
+Production: https://api.varansinagar.gov.in/api
+Staging: https://staging-api.varansinagar.gov.in/api
+```
+
+---
+
+## Support
+
+- **Documentation Issues**: See [TROUBLESHOOTING.md](../TROUBLESHOOTING.md)
+- **API Support**: api-support@varansinagar.gov.in
+- **Integration Help**: Contact WhatsApp Bot Team

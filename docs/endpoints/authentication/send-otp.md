@@ -1,38 +1,36 @@
-# Citizen Login - Send OTP
+# Send OTP
 
-## Endpoint Details
+Send a one-time password to user's mobile number for authentication.
 
-| Property | Value |
-|----------|-------|
-| **Method** | POST |
-| **URL** | `/chatbot/login/send-otp` |
-| **Authentication** | Not Required |
-| **Rate Limit** | 5 requests per minute per mobile |
+## Endpoint
 
-## Description
-Send an OTP to the citizen's registered mobile number. This is the first step of the login process.
+```
+POST /auth/send-otp
+```
 
 ## Request
 
-### Request Headers
+### Header
 ```
 Content-Type: application/json
 ```
 
-### Request Body
+### Body
 ```json
 {
-  "mobile_no": "9876543210",
-  "otp_type": "ChatbotLogin"
+  "mobile_no": "9876543210"
 }
 ```
 
-### Request Parameters
+### Parameters
+- **mobile_no** (string, required): User's 10-digit mobile number
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `mobile_no` | String | Yes | 10-digit mobile number |
-| `otp_type` | String | Yes | Type of OTP request. Value: `ChatbotLogin` |
+### Example Request
+```bash
+curl -X POST "https://api.varansinagar.gov.in/api/auth/send-otp" \
+  -H "Content-Type: application/json" \
+  -d '{"mobile_no": "9876543210"}'
+```
 
 ## Response
 
@@ -40,27 +38,24 @@ Content-Type: application/json
 ```json
 {
   "status": true,
-  "message": "OTP sent successfully"
+  "message": "OTP sent successfully",
+  "data": {
+    "mobile_no": "9876543210",
+    "otp_expiry": "5 minutes",
+    "request_id": "REQ-20260317-001234"
+  }
 }
 ```
 
-### Error Response Examples
-
-**Invalid Mobile Number (400)**
+### Error Response (400/500)
 ```json
 {
   "status": false,
-  "message": "Invalid mobile number format",
-  "error_code": "INVALID_MOBILE"
-}
-```
-
-**Rate Limit Exceeded (429)**
-```json
-{
-  "status": false,
-  "message": "Too many OTP requests. Try again after 5 minutes",
-  "error_code": "RATE_LIMIT_EXCEEDED"
+  "message": "Failed to send OTP",
+  "error_code": "INVALID_MOBILE",
+  "details": {
+    "error": "Mobile number format is invalid"
+  }
 }
 ```
 
@@ -68,26 +63,25 @@ Content-Type: application/json
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `status` | Boolean | Indicates success or failure |
-| `message` | String | Description of the result |
+| status | boolean | Request success indicator |
+| message | string | Response message |
+| data.mobile_no | string | Mobile number OTP was sent to |
+| data.otp_expiry | string | OTP validity duration |
+| data.request_id | string | Request reference ID |
 
-## Usage Notes
+## Error Codes
 
-- OTP is valid for 10 minutes
-- Maximum 5 OTP requests per mobile number per 5 minutes
-- OTP is sent via SMS to the registered mobile number
-- After successful OTP send, proceed to [Verify OTP endpoint](verify-otp.md)
+| Code | Status | Description |
+|------|--------|-------------|
+| SUCCESS | 200 | OTP sent successfully |
+| INVALID_MOBILE | 400 | Mobile number format is invalid |
+| MOBILE_NOT_REGISTERED | 400 | Mobile number not registered |
+| TOO_MANY_ATTEMPTS | 429 | Too many OTP requests (max 5 per hour) |
+| SERVER_ERROR | 500 | Internal server error |
 
-## Example cURL Request
+## Notes
 
-```bash
-curl -X POST https://api.varansinagar.gov.in/api/chatbot/login/send-otp \
-  -H "Content-Type: application/json" \
-  -d '{
-    "mobile_no": "9876543210",
-    "otp_type": "ChatbotLogin"
-  }'
-```
-
-## Related Endpoints
-- [Verify OTP](verify-otp.md) - Second step of login
+- OTP is valid for 5 minutes
+- Maximum 5 OTP requests per hour from same number
+- OTP is sent via SMS + WhatsApp for redundancy
+- User must verify OTP within expiry time
